@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[${minForgeVersion},)"
+license="MIT License"
+issueTrackerURL="https://github.com/NotIshi28/${main}/issues"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/${curseforge}"
+[[mods]]
+modId="${id}"
+version="${version}"
+displayName="${name}"
+logoFile="icon.png"
+authors="NotIshi28"
+description="${description}"
+[[dependencies.${id}]]
+    modId="forge"
+    mandatory=true
+    versionRange="[${minForgeVersion},)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.${id}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${minecraftVersion},)"
+    ordering="NONE"
+    side="BOTH"

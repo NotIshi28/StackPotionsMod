@@ -1,0 +1,108 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+
+version = "forge-${project.mod_version}"
+group = "com.NotIshi28.${project.mod_id}"
+archivesBaseName = project.mod_id
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+    mappings channel: project.mappings_channel, version: project.mappings_version
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                stackplus {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                stackplus {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'stackplus', '--all', '--output', file('src/generated/resources/')
+            mods {
+                stackplus {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft project.forge_version
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : project.mod_name,
+                "Specification-Vendor"    : "NotIshi28",
+                "Specification-Version"   : project.mod_version,
+                "Implementation-Title"    : project.mod_name,
+                "Implementation-Version"  : project.mod_version,
+                "Implementation-Vendor"   : "NotIshi28",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+processResources {
+    Map<String, ?> ex = new HashMap<>()
+    ex.put("id", project.mod_id)
+    ex.put("name", project.mod_name)
+    ex.put("version", project.mod_version)
+    ex.put("description", project.mod_description)
+    ex.put("main", project.main_name)
+    ex.put("curseforge", project.curseforge_name)
+    ex.put("minecraftVersion", project.minecraft_version)
+    ex.put("minForgeVersion", project.forge_version_min)
+
+    filesMatching("META-INF/mods.toml") {
+        expand(ex)
+    }
+
+    filesMatching("pack.mcmeta") {
+        expand(ex)
+    }
+}
+processResources.outputs.upToDateWhen{ false }
+
+repositories {
+    maven { url = 'https://libraries.minecraft.net/' }
+    mavenCentral()
+    maven { url = 'https://maven.minecraftforge.net/' }
+}
